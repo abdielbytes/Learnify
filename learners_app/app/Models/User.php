@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -27,8 +28,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'language',
     ];
-
+    public function lessons()
+    {
+        return $this->hasMany('App\Models\Lesson');
+    }
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -57,5 +62,51 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+    ];
+}
+
+class Course extends Model
+{
+    protected $fillable = [
+        'course_id',
+        'title',
+        'content'
+    ];
+    public function lessons()
+    {
+        return $this->hasMany('App\Models\Lesson');
+    }
+}
+
+class Lesson extends Model
+{
+    protected $fillable = [
+        'course_id',
+        'title',
+        'content',
+    ];
+
+    public function exercises()
+    {
+        return $this->hasMany('App\Models\Exercise');
+    }
+}
+
+class Exercise extends Model
+{
+    protected $fillable = [
+        'lesson_id',
+        'question',
+        'answer',
+    ];
+}
+
+class ProgressTracking extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'course_id',
+        'lesson_id',
+        'completion_status',
     ];
 }
